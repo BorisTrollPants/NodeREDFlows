@@ -1,0 +1,203 @@
+[
+    {
+        "id": "c63532155eb3831d",
+        "type": "tab",
+        "label": "Temperature Monitoring",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "0621526079834327",
+        "type": "inject",
+        "z": "c63532155eb3831d",
+        "name": "CQUDevice1",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{   \"deviceId\": \"device1\",   \"key\": \"CgQ7t+eF80Cjs5EfLqcb/XLN/EUYZU5EMAIoTFAX1Bw=\",   \"protocol\": \"amqp\",   \"data\": \"{temperature: 25}\" }",
+        "payloadType": "json",
+        "x": 120,
+        "y": 200,
+        "wires": [
+            [
+                "19745ef61ab81963",
+                "a390a15233ae07dc"
+            ]
+        ]
+    },
+    {
+        "id": "19745ef61ab81963",
+        "type": "function",
+        "z": "c63532155eb3831d",
+        "name": "Access Key Function",
+        "func": "msg.connectionString = global.get('HostName=COIS3.azure-devices.net;DeviceId=device1;SharedAccessKey=CgQ7t+eF80Cjs5EfLqcb/XLN/EUYZU5EMAIoTFAX1Bw=');\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 200,
+        "wires": [
+            [
+                "2b507eea99e92ff8"
+            ]
+        ]
+    },
+    {
+        "id": "2b507eea99e92ff8",
+        "type": "azureiothub",
+        "z": "c63532155eb3831d",
+        "name": "Azure IoT Hub",
+        "protocol": "amqp",
+        "x": 620,
+        "y": 200,
+        "wires": [
+            [
+                "93db565f62e502c9"
+            ]
+        ]
+    },
+    {
+        "id": "93db565f62e502c9",
+        "type": "debug",
+        "z": "c63532155eb3831d",
+        "name": "Debugger",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "1c9907cf17d01fca",
+        "type": "ui_chart",
+        "z": "c63532155eb3831d",
+        "name": "Temperature Line Chart",
+        "group": "00ad137607e9256b",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature Data Over Time",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "1000",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 650,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0322ce4c3cdc05a3",
+        "type": "ui_gauge",
+        "z": "c63532155eb3831d",
+        "name": "Temperature Gauge",
+        "group": "00ad137607e9256b",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "",
+        "format": "{{value}} C",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 640,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "a390a15233ae07dc",
+        "type": "function",
+        "z": "c63532155eb3831d",
+        "name": "Temp Data Function",
+        "func": "var iotData = {\n    temperature: Math.floor(Math.random() * 100)\n};\nmsg.payload = iotData;\nnode.send([null, null, msg]);\n\nvar gaugeMsg = { payload: iotData.temperature };\nnode.send([gaugeMsg, null, null]);\n\nvar chartMsg = { payload: [{ x: (new Date()).toISOString(), y: iotData.temperature }] };\nnode.send([null, chartMsg, null]);",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 280,
+        "wires": [
+            [
+                "1c9907cf17d01fca",
+                "0322ce4c3cdc05a3"
+            ]
+        ]
+    },
+    {
+        "id": "00ad137607e9256b",
+        "type": "ui_group",
+        "name": "Temperature Data Tab",
+        "tab": "f5ba66c477f07a07",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f5ba66c477f07a07",
+        "type": "ui_tab",
+        "name": "Temperature Data Dashboard",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
