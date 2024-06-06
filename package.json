@@ -1,0 +1,14 @@
+{
+  "name": "node-red-project",
+  "description": "A Node-RED Project",
+  "version": "1.0.0",
+  "dependencies": {
+    "node-red": "^2.2.0",
+    "node-red-dashboard": "^2.29.0",
+    "node-red-contrib-azure-iot-hub": "^0.4.0",
+    "node-red-contrib-data-view": "^0.0.3"
+  },
+  "scripts": {
+    "start": "node-red"
+  }
+}
